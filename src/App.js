@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import Header from "./components/layout/Header";
+import styled from "styled-components";
 
-function App() {
+const Container = styled.div`
+  display: flex;
+  min-height: 100vh;
+  width: ${(props) => (props.isMatch ? "67%" : "100%")};
+  flex-direction: column;
+  margin: ${(props) => (props.isMatch ? "0 auto" : "initial")};
+`;
+
+const App = () => {
+  const [isMatch, setIsMatch] = useState(false);
+
+  const handleScreenChanges = (mql) => {
+    setIsMatch(mql.matches);
+  };
+
+  useEffect(() => {
+    const media = (size) => {
+      return window.matchMedia(`screen and (max-width: ${size}px)`);
+    };
+
+    const MOBILE = media(720);
+
+    if (!isMatch) {
+      handleScreenChanges(MOBILE);
+    }
+    MOBILE.addEventListener("change", handleScreenChanges);
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container isMatch={isMatch}>
+      <Header isMobile={isMatch} />
+    </Container>
   );
-}
+};
 
 export default App;
